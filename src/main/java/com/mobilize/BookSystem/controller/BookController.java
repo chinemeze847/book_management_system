@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
+import com.mobilize.BookSystem.dto.BookUpdateDTO;
 import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.service.BookService;
 
@@ -25,12 +26,12 @@ public class BookController {
 
 	BookService bookService;
 
-	@PostMapping("/")
+	@PostMapping()
 	public ResponseEntity<?> createBook(@Valid @RequestBody BookRequestDTO bookRequest){
 		return new ResponseEntity<>(bookService.createBook(bookRequest), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/")
+	@GetMapping()
 	public ResponseEntity<Page<Book>> getAllBooks(@RequestParam(defaultValue = "5", required = false)
 	Integer pageSize, @RequestParam(defaultValue = "0", required = false) Integer page)
 	{
@@ -49,15 +50,23 @@ public class BookController {
 		return ResponseEntity.ok(book);
 	}
 
-	@PutMapping("/")
-	public ResponseEntity<Book> updateBook(@Valid @RequestBody BookRequestDTO bookRequest){
-		Book book = bookService.updateBook(bookRequest);
+	@PutMapping("/{bookId}")
+	public ResponseEntity<Book> updateBook(@PathVariable Long bookId,@Valid @RequestBody BookUpdateDTO bookUpdate){
+		Book book = bookService.updateBook(bookId,bookUpdate);
 		return ResponseEntity.ok(book);
 	}
 
 	@DeleteMapping("/{bookId}")
 	public ResponseEntity<Book> deleteBook(@PathVariable Long bookId){
-		Book book = bookService.deleteBook(bookId);
-		return ResponseEntity.ok(book);
+		bookService.deleteBook(bookId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/search")
+	public List<Book> searchBooks(
+			@RequestParam(required = false) String title,
+			@RequestParam(required = false) String author
+	) {
+		return bookService.searchBooks(title, author);
 	}
 }

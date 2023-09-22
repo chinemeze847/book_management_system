@@ -17,7 +17,9 @@ public interface BookService {
 
 	Book updateBook(Long id, BookUpdateDTO updatedBook);
 
-	Book deleteBook(Long bookId);
+	void deleteBook(Long bookId);
 
 	Book getBookById(Long id);
+
+	List<Book> searchBooks(String title, String author);
 }
