@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    database: MySQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://${HOST_NAME}:${PORT}/${DB_NAME}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+    driverClassName: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      platform: mysql
+#logging:
+#  level:
+#    root: DEBUG
+#    com.mobilize.BookSystem: DEBUG
+
+server:
+  port:
+    9090
