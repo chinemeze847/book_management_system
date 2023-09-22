@@ -26,7 +26,7 @@ public class BookController {
 	BookService bookService;
 
 	@PostMapping("/")
-	public ResponseEntity<?> createBook(@RequestBody BookRequestDTO bookRequest){
+	public ResponseEntity<?> createBook(@Valid @RequestBody BookRequestDTO bookRequest){
 		return new ResponseEntity<>(bookService.createBook(bookRequest), HttpStatus.CREATED);
 	}
 
@@ -41,6 +41,12 @@ public class BookController {
 			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok(books);
+	}
+
+	@GetMapping("/{bookId}")
+	public ResponseEntity<Book> getBookById(@PathVariable Long bookId) {
+		Book book = bookService.getBookById(bookId);
+		return ResponseEntity.ok(book);
 	}
 
 	@PutMapping("/")

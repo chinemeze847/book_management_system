@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
+import com.mobilize.BookSystem.dto.BookUpdateDTO;
 import com.mobilize.BookSystem.model.Book;
 
 public interface BookService {
@@ -14,7 +15,9 @@ public interface BookService {
 
 	Page<Book> getAllBooks(Pageable pageable);
 
-	Book updateBook(BookRequestDTO book);
+	Book updateBook(Long id, BookUpdateDTO updatedBook);
 
 	Book deleteBook(Long bookId);
+
+	Book getBookById(Long id);
 }

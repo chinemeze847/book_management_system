@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
+import com.mobilize.BookSystem.dto.BookUpdateDTO;
+import com.mobilize.BookSystem.exception.BookNotFoundException;
 import com.mobilize.BookSystem.exception.BookValidationException;
 import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.repository.BookRepository;
@@ -38,9 +40,28 @@ class BookServiceImpl implements BookService {
 		return bookRepository.findAll(pageable);
 	}
 
+	public Book getBookById(Long id) {
+		return bookRepository.findById(id)
+				.orElseThrow(() -> new BookNotFoundException("Book not found with ID: " + id));
+	}
+
 	@Override
-	public Book updateBook(BookRequestDTO book) {
-		return null;
+	public Book updateBook(Long id, BookUpdateDTO updatedBook) {
+		if (!bookRepository.existsById(id)) {
+			throw new BookNotFoundException("Book not found with ID: " + id);
+		}
+		updatedBook.setId(id);
+
+		Book book = Book.builder()
+				.id(id)
+				.author(updatedBook.getAuthor())
+				.price(updatedBook.getPrice())
+				.title(updatedBook.getTitle())
+				.isbn(updatedBook.getIsbn())
+				.publicationYear(updatedBook.getPublicationDate())
+				.build();
+
+		return bookRepository.save(book);
 	}
 
 	@Override
