@@ -39,7 +39,7 @@ class BookServiceImpl implements BookService {
 					.price(bookRequest.getPrice())
 					.title(bookRequest.getTitle())
 					.isbn(bookRequest.getIsbn())
-					.publicationYear(bookRequest.getPublicationDate())
+					.publicationYear(bookRequest.getPublicationYear())
 					.build();
 			log.info("Saving book to database");
 			return bookRepository.save(book);
@@ -64,28 +64,37 @@ class BookServiceImpl implements BookService {
 	@Override
 	public List<Book> searchBooks(String title, String author) {
 		try {
-			return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(title, author);
+			if (title != null && author != null) {
+				return bookRepository.findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase(title, author);
+			} else if (title != null) {
+				return bookRepository.findByTitleContainingIgnoreCase(title);
+			} else if (author != null) {
+				return bookRepository.findByAuthorContainingIgnoreCase(author);
+			} else {
+				// If neither title nor author is provided, you can choose to return all books
+				return bookRepository.findAll();
+			}
 		} catch (InvalidDataAccessApiUsageException ex) {
 			throw new InvalidSearchParametersException("Invalid search parameters: " + ex.getMessage());
 		}
 	}
 
 	@Override
-	public Book updateBook(Long id, BookUpdateDTO updatedBook) {
-		if (!bookRepository.existsById(id)) {
-			throw new BookNotFoundException("Book not found with ID: " + id);
+	public Book updateBook(Long bookId, BookUpdateDTO updatedBook) {
+		if (!bookRepository.existsById(bookId)) {
+			throw new BookNotFoundException("Book not found with ID: " + bookId);
 		}
-		updatedBook.setId(id);
+		updatedBook.setId(bookId);
 
 		Book book = Book.builder()
-				.id(id)
+				.id(bookId)
 				.author(updatedBook.getAuthor())
 				.price(updatedBook.getPrice())
 				.title(updatedBook.getTitle())
 				.isbn(updatedBook.getIsbn())
-				.publicationYear(updatedBook.getPublicationDate())
+				.publicationYear(updatedBook.getPublicationYear())
 				.build();
-
+		log.info("updating book with id : {}", bookId);
 		return bookRepository.save(book);
 	}
 
@@ -94,6 +103,7 @@ class BookServiceImpl implements BookService {
 		if (!bookRepository.existsById(bookId)) {
 			throw new BookNotFoundException("Book not found with ID: " + bookId);
 		}
+		log.info("Deleting book with id : {}", bookId);
 		bookRepository.deleteById(bookId);
 	}
 }

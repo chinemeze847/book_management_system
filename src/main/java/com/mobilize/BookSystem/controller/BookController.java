@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -65,10 +64,14 @@ public class BookController {
 	}
 
 	@GetMapping("/search")
-	public List<Book> searchBooks(
+	public ResponseEntity<List<Book>> searchBooks(
 			@RequestParam(required = false) String title,
 			@RequestParam(required = false) String author
 	) {
-		return bookService.searchBooks(title, author);
+		List<Book> matchingBooks = bookService.searchBooks(title, author);
+		if (matchingBooks.isEmpty()) {
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(matchingBooks);
 	}
 }

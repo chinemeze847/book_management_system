@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookUpdateDTO {
 
-	@NotBlank
 	private Long id;
 
 	@NotBlank
@@ -28,7 +27,7 @@ public class BookUpdateDTO {
 	private String author;
 
 	@NotNull
-	private int publicationDate;
+	private int publicationYear;
 
 	@NotNull
 	@DecimalMin(value = "50.0", inclusive = true)

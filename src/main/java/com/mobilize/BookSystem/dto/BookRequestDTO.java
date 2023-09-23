@@ -27,7 +27,7 @@ public class BookRequestDTO {
 	private String author;
 
 	@NotNull
-	private int publicationDate;
+	private int publicationYear;
 
 	@NotNull
 	@DecimalMin(value = "50.0", inclusive = true)

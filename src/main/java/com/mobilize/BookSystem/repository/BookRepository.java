@@ -12,8 +12,12 @@ import com.mobilize.BookSystem.model.Book;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-	List<Book> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(String title, String author);
 
 	Page<Book> findAll(Pageable pageable);
 
+	List<Book> findByTitleContainingIgnoreCase(String title);
+
+	List<Book> findByAuthorContainingIgnoreCase(String author);
+
+	List<Book> findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase(String title, String author);
 }
