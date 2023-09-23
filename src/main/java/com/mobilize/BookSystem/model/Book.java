@@ -12,7 +12,6 @@ import lombok.*;
 @Table(name = "books")
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
 @Data
 public class Book {
 	@Id
@@ -36,6 +35,15 @@ public class Book {
 	private double price;
 
 	public Book(String title, String author, int publicationYear, String isbn, double price) {
+		this.title = title;
+		this.author = author;
+		this.publicationYear = publicationYear;
+		this.isbn = isbn;
+		this.price = price;
+	}
+
+	public Book(Long id, String title, String author, int publicationYear, String isbn, double price) {
+		this.id = id;
 		this.title = title;
 		this.author = author;
 		this.publicationYear = publicationYear;
