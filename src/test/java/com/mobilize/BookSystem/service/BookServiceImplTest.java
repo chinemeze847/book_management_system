@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,11 +106,6 @@ class BookServiceImplTest {
 		assertThrows(BookNotFoundException.class, () -> bookService.getBookById(2L));
 	}
 
-
-	@Test
-	void ShouldGetBookById() {
-	}
-
 	@Test
 	void ShouldUpdateBook() {
 	}
@@ -147,5 +143,30 @@ class BookServiceImplTest {
 
 		// Assert the result
 		Assert.assertEquals(expectedBooks, result);
+	}
+
+	@Test
+	public void shouldSearchBooksByTitleAndAuthor() {
+		when(bookRepository.findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase("The rook plays", "Chess Man"))
+				.thenReturn(Collections.singletonList(validBook));
+
+		List<Book> resultBooks = bookService.searchBooks("The rook plays", "Chess Man");
+
+		assertNotNull(resultBooks);
+		assertFalse(resultBooks.isEmpty());
+		assertEquals(1, resultBooks.size());
+		assertEquals(validBook, resultBooks.get(0));
+	}
+
+	@Test
+	public void shouldSearchBooksNoParameters() {
+		when(bookRepository.findAll()).thenReturn(Collections.singletonList(validBook));
+
+		List<Book> resultBooks = bookService.searchBooks(null, null);
+
+		assertNotNull(resultBooks);
+		assertFalse(resultBooks.isEmpty());
+		assertEquals(1, resultBooks.size());
+		assertEquals(validBook, resultBooks.get(0));
 	}
 }
