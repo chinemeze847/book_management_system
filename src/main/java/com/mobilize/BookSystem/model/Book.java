@@ -11,8 +11,9 @@ import lombok.*;
 @Entity
 @Table(name = "books")
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@Data
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +27,19 @@ public class Book {
 	private String author;
 
 	@Column(name = "publication_year")
-	private LocalDate publicationYear;
+	private int publicationYear;
 
 	@Column(name = "isbn", unique = true, nullable = false)
 	private String isbn;
 
 	@Column(name = "price")
-	private BigDecimal price;
+	private double price;
 
+	public Book(String title, String author, int publicationYear, String isbn, double price) {
+		this.title = title;
+		this.author = author;
+		this.publicationYear = publicationYear;
+		this.isbn = isbn;
+		this.price = price;
+	}
 }

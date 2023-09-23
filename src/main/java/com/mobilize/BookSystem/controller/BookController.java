@@ -20,11 +20,15 @@ import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.service.BookService;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/books")
 public class BookController {
 
 	BookService bookService;
+
+	@Autowired
+	public BookController(BookService bookService) {
+		this.bookService = bookService;
+	}
 
 	@PostMapping()
 	public ResponseEntity<?> createBook(@Valid @RequestBody BookRequestDTO bookRequest){
@@ -32,15 +36,13 @@ public class BookController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<Page<Book>> getAllBooks(@RequestParam(defaultValue = "5", required = false)
-	Integer pageSize, @RequestParam(defaultValue = "0", required = false) Integer page)
+	public ResponseEntity<Page<Book>> getAllBooks(
+			@RequestParam(defaultValue = "5", required = false) Integer pageSize,
+			@RequestParam(defaultValue = "0", required = false) Integer page)
 	{
 		Pageable pageable = PageRequest.of(page, pageSize);
 		Page<Book> books = bookService.getAllBooks(pageable);
 
-		if (books.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
 		return ResponseEntity.ok(books);
 	}
 

@@ -12,7 +12,6 @@ import com.mobilize.BookSystem.model.Book;
 public interface BookService {
 	Object createBook(BookRequestDTO bookRequest);
 
-
 	Page<Book> getAllBooks(Pageable pageable);
 
 	Book updateBook(Long id, BookUpdateDTO updatedBook);

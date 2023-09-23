@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
@@ -21,10 +22,15 @@ import com.mobilize.BookSystem.repository.BookRepository;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 class BookServiceImpl implements BookService {
 
 	BookRepository bookRepository;
+
+	@Autowired
+	public BookServiceImpl(BookRepository bookRepository) {
+		this.bookRepository = bookRepository;
+	}
+
 	@Override
 	public Object createBook(BookRequestDTO bookRequest) {
 		try {
@@ -35,6 +41,7 @@ class BookServiceImpl implements BookService {
 					.isbn(bookRequest.getIsbn())
 					.publicationYear(bookRequest.getPublicationDate())
 					.build();
+			log.info("Saving book to database");
 			return bookRepository.save(book);
 		} catch (DataIntegrityViolationException e) {
 			throw new BookValidationException("Invalid book data: " + e.getMessage());
@@ -43,7 +50,10 @@ class BookServiceImpl implements BookService {
 
 	@Override
 	public Page<Book> getAllBooks(Pageable pageable) {
-		return bookRepository.findAll(pageable);
+		try {
+			return bookRepository.findAll(pageable);
+		}catch (InvalidDataAccessApiUsageException ex) {
+		throw new InvalidSearchParametersException("Invalid search parameters: " + ex.getMessage());}
 	}
 
 	public Book getBookById(Long id) {

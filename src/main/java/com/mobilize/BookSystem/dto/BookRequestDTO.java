@@ -27,11 +27,11 @@ public class BookRequestDTO {
 	private String author;
 
 	@NotNull
-	private LocalDate publicationDate;
+	private int publicationDate;
 
 	@NotNull
-	@DecimalMin(value = "100.0", inclusive = true)
-	private BigDecimal price;
+	@DecimalMin(value = "50.0", inclusive = true)
+	private double price;
 
 	@Pattern(regexp = "^(\\d{10}|\\d{13})$") // ISBN-10 or ISBN-13 format
 	private String isbn;
