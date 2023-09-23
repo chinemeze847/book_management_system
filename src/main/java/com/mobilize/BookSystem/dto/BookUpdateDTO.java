@@ -35,4 +35,12 @@ public class BookUpdateDTO {
 
 	@Pattern(regexp = "^(\\d{10}|\\d{13})$") // ISBN-10 or ISBN-13 format
 	private String isbn;
+
+	public BookUpdateDTO(String title, String author, int publicationYear, double price, String isbn) {
+		this.title = title;
+		this.author = author;
+		this.publicationYear = publicationYear;
+		this.price = price;
+		this.isbn = isbn;
+	}
 }

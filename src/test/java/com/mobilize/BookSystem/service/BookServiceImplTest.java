@@ -1,27 +1,31 @@
 package com.mobilize.BookSystem.service;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
+import com.mobilize.BookSystem.dto.BookUpdateDTO;
+import com.mobilize.BookSystem.exception.BookNotFoundException;
+import com.mobilize.BookSystem.exception.BookValidationException;
 import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.repository.BookRepository;
 
@@ -35,6 +39,10 @@ class BookServiceImplTest {
 
 	private List<Book> expectedBooks;
 
+	private BookRequestDTO validBookRequest;
+	private BookUpdateDTO validBookUpdate;
+	private Book validBook;
+
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.openMocks(this);
@@ -43,45 +51,60 @@ class BookServiceImplTest {
 		String author = "Jerry King";
 		expectedBooks = new ArrayList<>();
 		expectedBooks.add(new Book(1L,title, author,2024, "9898765456", 29.99));
+
+		validBookRequest = new BookRequestDTO("The Knights", "Charles James",  2022, 19.99,"5867656786");
+		validBookUpdate = new BookUpdateDTO("The Sanders", "James Cahil",  2006, 889.56,"54657654323");
+		validBook = new Book(1L, "The rook plays", "Chess Man",  2022,  "5967453454", 987.56);
 	}
 
 
 	@Test
-	void shouldCreateBook() {
-		// Request to create book
-		BookRequestDTO bookRequest = new BookRequestDTO();
-		bookRequest.setAuthor("james");
-		bookRequest.setPrice(300.03);
-		bookRequest.setTitle("Journey to France");
-		bookRequest.setIsbn("9897456434");
-		bookRequest.setPublicationYear(2011);
+	void shouldCreateBookWithValidCredentials() {
+		when(bookRepository.save(any(Book.class))).thenReturn(validBook);
 
-		//what is actually saved on the repository
-		Book createdBook = new Book();
-		createdBook.setId(1L);
-		createdBook.setAuthor("james");
-		createdBook.setPrice(300.03);
-		createdBook.setTitle("Journey to France");
-		createdBook.setIsbn("9897456434");
-		createdBook.setPublicationYear(2011);
+		Book createdBook = (Book) bookService.createBook(validBookRequest);
 
-		//what the repository should return when the save method is called
-		when(bookRepository.save(any(Book.class))).thenReturn(createdBook);
-
-		//The service method to create the book
-		Object result = bookService.createBook(bookRequest);
-
-		// Verify that the repository's save method was called with the correct book object
-		verify(bookRepository, times(1)).save(any(Book.class));
-
-		// Verify that the result is the created book
-		assertEquals(createdBook, result);
+		assertNotNull(createdBook);
+		assertEquals(validBook, createdBook);
 
 	}
 
 	@Test
-	void shouldGetAllBooks() {
+	public void shouldThrowExceptionWithInvalidRequest() {
+		when(bookRepository.save(any(Book.class))).thenThrow(new DataIntegrityViolationException("Data integrity violation"));
+
+		assertThrows(BookValidationException.class, () -> bookService.createBook(validBookRequest));
 	}
+
+
+	@Test
+	public void shouldGetAllBooks() {
+		Page<Book> expectedPage = Mockito.mock(Page.class);
+		when(bookRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
+
+		Page<Book> resultPage = bookService.getAllBooks(Pageable.unpaged());
+
+		assertNotNull(resultPage);
+		assertEquals(expectedPage, resultPage);
+	}
+
+	@Test
+	public void shouldGetBookWithValidID() {
+		when(bookRepository.findById(1L)).thenReturn(Optional.of(validBook));
+
+		Book resultBook = bookService.getBookById(1L);
+
+		assertNotNull(resultBook);
+		assertEquals(validBook, resultBook);
+	}
+
+	@Test
+	public void shouldThrowBookNotFoundExceptionWithInvalidId() {
+		when(bookRepository.findById(2L)).thenReturn(Optional.empty());
+
+		assertThrows(BookNotFoundException.class, () -> bookService.getBookById(2L));
+	}
+
 
 	@Test
 	void ShouldGetBookById() {
