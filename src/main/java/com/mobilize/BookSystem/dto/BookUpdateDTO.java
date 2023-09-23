@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class BookUpdateDTO {
 
@@ -37,6 +36,15 @@ public class BookUpdateDTO {
 	private String isbn;
 
 	public BookUpdateDTO(String title, String author, int publicationYear, double price, String isbn) {
+		this.title = title;
+		this.author = author;
+		this.publicationYear = publicationYear;
+		this.price = price;
+		this.isbn = isbn;
+	}
+
+	public BookUpdateDTO(Long id, String title, String author, int publicationYear, double price, String isbn) {
+		this.id = id;
 		this.title = title;
 		this.author = author;
 		this.publicationYear = publicationYear;

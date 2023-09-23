@@ -54,7 +54,7 @@ class BookServiceImplTest {
 		expectedBooks.add(new Book(1L,title, author,2024, "9898765456", 29.99));
 
 		validBookRequest = new BookRequestDTO("The Knights", "Charles James",  2022, 19.99,"5867656786");
-		validBookUpdate = new BookUpdateDTO("The Sanders", "James Cahil",  2006, 889.56,"54657654323");
+		validBookUpdate = new BookUpdateDTO(1L,"The Sanders", "James Cahil",  2006, 889.56,"54657654323");
 		validBook = new Book(1L, "The rook plays", "Chess Man",  2022,  "5967453454", 987.56);
 	}
 
@@ -107,7 +107,48 @@ class BookServiceImplTest {
 	}
 
 	@Test
-	void ShouldUpdateBook() {
+	void ShouldUpdateBookWithValidRequestCredentials() {
+		Long bookId = 1L;
+		Book existingBook = new Book();
+		existingBook.setId(bookId);
+
+		Book updatedBook = Book.builder()
+				.id(bookId)
+				.isbn(validBookUpdate.getIsbn())
+				.title(validBookUpdate.getTitle())
+				.publicationYear(validBookUpdate.getPublicationYear())
+				.author(validBookUpdate.getAuthor())
+				.price(validBookUpdate.getPrice())
+				.build();
+
+
+		when(bookRepository.existsById(bookId)).thenReturn(true);
+		when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
+
+		// Act
+		Book result = bookService.updateBook(bookId, validBookUpdate);
+
+		// Assert
+		assertNotNull(result);
+		assertEquals(validBookUpdate.getAuthor(), result.getAuthor());
+		assertEquals(validBookUpdate.getTitle(), result.getTitle());
+		assertEquals(validBookUpdate.getIsbn(), result.getIsbn());
+		assertEquals(validBookUpdate.getPrice(), result.getPrice());
+		assertEquals(validBookUpdate.getPublicationYear(), result.getPublicationYear());
+	}
+
+	@Test
+	void shouldThrowBookNotFoundExceptionWithInvalidBookId() {
+		// Arrange
+		Long bookId = 1L;
+		BookUpdateDTO updatedBook = new BookUpdateDTO();
+
+		when(bookRepository.existsById(bookId)).thenReturn(false);
+
+		// Act and Assert
+		assertThrows(BookNotFoundException.class, () -> {
+			bookService.updateBook(bookId, updatedBook);
+		});
 	}
 
 	@Test
