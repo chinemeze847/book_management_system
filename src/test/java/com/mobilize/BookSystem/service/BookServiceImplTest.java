@@ -61,10 +61,14 @@ class BookServiceImplTest {
 
 	@Test
 	void shouldCreateBookWithValidCredentials() {
+
+		//fake the result returned by the save method
 		when(bookRepository.save(any(Book.class))).thenReturn(validBook);
 
+		//create the book
 		Book createdBook = (Book) bookService.createBook(validBookRequest);
 
+		//assert the results
 		assertNotNull(createdBook);
 		assertEquals(validBook, createdBook);
 
@@ -72,6 +76,7 @@ class BookServiceImplTest {
 
 	@Test
 	public void shouldThrowExceptionWithInvalidRequest() {
+		//fake the
 		when(bookRepository.save(any(Book.class))).thenThrow(new DataIntegrityViolationException("Data integrity violation"));
 
 		assertThrows(BookValidationException.class, () -> bookService.createBook(validBookRequest));
@@ -80,38 +85,53 @@ class BookServiceImplTest {
 
 	@Test
 	public void shouldGetAllBooks() {
+
+		//build the object
 		Page<Book> expectedPage = Mockito.mock(Page.class);
+
+		//fake the return object
 		when(bookRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
 
+		//get the results
 		Page<Book> resultPage = bookService.getAllBooks(Pageable.unpaged());
 
+		//assert results
 		assertNotNull(resultPage);
 		assertEquals(expectedPage, resultPage);
 	}
 
 	@Test
 	public void shouldGetBookWithValidID() {
+		//fake the reply of the findById method on the repository
 		when(bookRepository.findById(1L)).thenReturn(Optional.of(validBook));
 
+		//call the service method that returns validBook
 		Book resultBook = bookService.getBookById(1L);
 
+
+		//assert results
 		assertNotNull(resultBook);
 		assertEquals(validBook, resultBook);
 	}
 
 	@Test
 	public void shouldThrowBookNotFoundExceptionWithInvalidId() {
+		//fake the reply
 		when(bookRepository.findById(2L)).thenReturn(Optional.empty());
 
+		//assert that it throws bookNotFoundException
 		assertThrows(BookNotFoundException.class, () -> bookService.getBookById(2L));
 	}
 
 	@Test
 	void ShouldUpdateBookWithValidRequestCredentials() {
+
+		//Arrange the objects to use
 		Long bookId = 1L;
 		Book existingBook = new Book();
 		existingBook.setId(bookId);
 
+		//build the book object to be used to update
 		Book updatedBook = Book.builder()
 				.id(bookId)
 				.isbn(validBookUpdate.getIsbn())
@@ -122,13 +142,14 @@ class BookServiceImplTest {
 				.build();
 
 
+		//fake the return type of the bookRepository
 		when(bookRepository.existsById(bookId)).thenReturn(true);
 		when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
 
-		// Act
+		// update the book
 		Book result = bookService.updateBook(bookId, validBookUpdate);
 
-		// Assert
+		// Assert the results
 		assertNotNull(result);
 		assertEquals(validBookUpdate.getAuthor(), result.getAuthor());
 		assertEquals(validBookUpdate.getTitle(), result.getTitle());
@@ -139,10 +160,12 @@ class BookServiceImplTest {
 
 	@Test
 	void shouldThrowBookNotFoundExceptionWithInvalidBookId() {
-		// Arrange
+
+		// Arrange the variables
 		Long bookId = 1L;
 		BookUpdateDTO updatedBook = new BookUpdateDTO();
 
+		//fake the reply returned by existsById
 		when(bookRepository.existsById(bookId)).thenReturn(false);
 
 		// Act and Assert
@@ -153,10 +176,11 @@ class BookServiceImplTest {
 
 	@Test
 	void shouldThrowExceptionForBookWithInvalidData() {
-		// Arrange
+		// Arrange results
 		Long bookId = 1L;
 		BookUpdateDTO updatedBook = new BookUpdateDTO();
 
+		//fake what the repository returns
 		when(bookRepository.existsById(bookId)).thenReturn(true);
 		when(bookRepository.save(any(Book.class))).thenThrow(new BookValidationException("Invalid data"));
 
@@ -182,14 +206,16 @@ class BookServiceImplTest {
 		verify(bookRepository, times(1)).deleteById(bookId);
 	}
 
+
 	@Test
 	void shouldThrowBookNotFoundExceptionWithInvalidID() {
-		// Arrange
+		// sets the book id to 1
 		Long bookId = 1L;
 
+		//should return false  when repository method is called with bookId 1
 		when(bookRepository.existsById(bookId)).thenReturn(false);
 
-		// Act and Assert
+		// checks if it throws a book not found exception
 		assertThrows(BookNotFoundException.class, () -> {
 			bookService.deleteBook(bookId);
 		});
@@ -228,11 +254,14 @@ class BookServiceImplTest {
 
 	@Test
 	public void shouldSearchBooksByTitleAndAuthor() {
+		//return this list of books when the repository method is called
 		when(bookRepository.findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase("The rook plays", "Chess Man"))
 				.thenReturn(Collections.singletonList(validBook));
 
+		//The for books with given title and author
 		List<Book> resultBooks = bookService.searchBooks("The rook plays", "Chess Man");
 
+		//assert the results to be true
 		assertNotNull(resultBooks);
 		assertFalse(resultBooks.isEmpty());
 		assertEquals(1, resultBooks.size());
@@ -241,10 +270,14 @@ class BookServiceImplTest {
 
 	@Test
 	public void shouldSearchBooksWithNoParameters() {
+
+		//returns valid book as a collection when findAll is found
 		when(bookRepository.findAll()).thenReturn(Collections.singletonList(validBook));
 
+		//returns all when both title and author null
 		List<Book> resultBooks = bookService.searchBooks(null, null);
 
+		//assert results
 		assertNotNull(resultBooks);
 		assertFalse(resultBooks.isEmpty());
 		assertEquals(1, resultBooks.size());

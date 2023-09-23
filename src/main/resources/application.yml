@@ -12,10 +12,6 @@ spring:
   sql:
     init:
       platform: mysql
-#logging:
-#  level:
-#    root: DEBUG
-#    com.mobilize.BookSystem: DEBUG
 
 server:
   port:
