@@ -152,7 +152,47 @@ class BookServiceImplTest {
 	}
 
 	@Test
-	void ShouldDeleteBook() {
+	void shouldThrowExceptionForBookWithInvalidData() {
+		// Arrange
+		Long bookId = 1L;
+		BookUpdateDTO updatedBook = new BookUpdateDTO();
+
+		when(bookRepository.existsById(bookId)).thenReturn(true);
+		when(bookRepository.save(any(Book.class))).thenThrow(new BookValidationException("Invalid data"));
+
+		// Act and Assert
+		assertThrows(BookValidationException.class, () -> {
+			bookService.updateBook(bookId, updatedBook);
+		});
+	}
+
+	@Test
+	void shouldDeleteBookWithValidId() {
+		// Arrange
+		Long bookId = 1L;
+
+		when(bookRepository.existsById(bookId)).thenReturn(true);
+
+		// Act
+		assertDoesNotThrow(() -> {
+			bookService.deleteBook(bookId);
+		});
+
+		// Assert
+		verify(bookRepository, times(1)).deleteById(bookId);
+	}
+
+	@Test
+	void shouldThrowBookNotFoundExceptionWithInvalidID() {
+		// Arrange
+		Long bookId = 1L;
+
+		when(bookRepository.existsById(bookId)).thenReturn(false);
+
+		// Act and Assert
+		assertThrows(BookNotFoundException.class, () -> {
+			bookService.deleteBook(bookId);
+		});
 	}
 
 	@Test
