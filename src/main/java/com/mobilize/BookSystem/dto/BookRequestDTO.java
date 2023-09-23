@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 
 
 
+
+/**
+ * Data Transfer Object (DTO) representing a request to create a new book.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +37,7 @@ public class BookRequestDTO {
 	@DecimalMin(value = "50.0", inclusive = true)
 	private double price;
 
-	@Pattern(regexp = "^(\\d{10}|\\d{13})$") // ISBN-10 or ISBN-13 format
+	@Pattern(regexp = "^(\\d{10}|\\d{13})$")
+	// ISBN-10 or ISBN-13 format (regular expression)
 	private String isbn;
 }

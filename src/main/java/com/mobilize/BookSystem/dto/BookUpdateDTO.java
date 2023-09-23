@@ -10,6 +10,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * Data Transfer Object (DTO) representing a request to update a book.
+ */
 @Data
 @NoArgsConstructor
 @Builder
