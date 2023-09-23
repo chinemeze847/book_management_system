@@ -240,7 +240,7 @@ class BookServiceImplTest {
 	}
 
 	@Test
-	public void shouldSearchBooksNoParameters() {
+	public void shouldSearchBooksWithNoParameters() {
 		when(bookRepository.findAll()).thenReturn(Collections.singletonList(validBook));
 
 		List<Book> resultBooks = bookService.searchBooks(null, null);
