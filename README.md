@@ -29,17 +29,18 @@ In order to run this project the following should be installed on your local mac
 * **Intellij IDEA** The development environment that you can use to run this project
 
 ## Usages
-* Go to this website https://start.spring.io/ an initialize the spring project and download it as a zip folder
+* Go to this website https://start.spring.io/ an initialize the spring project and download it as a zip folder if you are starting a new project
 ![img.png](img.png)
+* In order to use this project you can clone this repository to your local machine using ```git clone https://github.com/chinemeze847/book_management_system.git```
 
 
 * Unzip the folder and import it into your intellij
 ![img_1.png](img_1.png)
 
-** The project can now be ran using the green run button at the top right corner of intellij IDEA 
+** The project can now be ran using the green run button in the top right corner of intellij IDEA 
 
 ## Configuration
-I set up some environment variables, by clicking on the button cirled blue below an edit configuration window will pop up that allows you to add or edit environment variables
+I set up some environment variables, by clicking on the button circled blue below an edit configuration window will pop up that allows you to add or edit environment variables
 ![img_2.png](img_2.png)
 
 For this project the following environment variables were used;
@@ -66,7 +67,7 @@ Follow the link below to view the API documentation generated with postman
 https://documenter.getpostman.com/view/16028426/2s9YJW4kC3
 
 ## Tests
-Inorder to run the test click on the green button that appears behind the method name
+Inorder to run the test click on the green button that appears behind the method name in the file located in com/mobilize/BookSystem/service/BookServiceImplTest.java
 ![img_3.png](img_3.png)
 It will provide you with options like running the test or using the debug mode
 you can run it in debug mode to check for irregularities
