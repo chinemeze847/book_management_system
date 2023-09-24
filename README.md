@@ -37,7 +37,7 @@ In order to run this project the following should be installed on your local mac
 * Unzip the folder and import it into your intellij
 ![img_1.png](img_1.png)
 
-** The project can now be ran using the green run button in the top right corner of intellij IDEA 
+* The project can now be ran using the green run button in the top right corner of intellij IDEA 
 
 ## Configuration
 I set up some environment variables, by clicking on the button circled blue below an edit configuration window will pop up that allows you to add or edit environment variables
