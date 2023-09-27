@@ -5,9 +5,9 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://${HOST_NAME}:${PORT}/${DB_NAME}
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    url: jdbc:mysql://${HOST_NAME}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
   sql:
     init:
@@ -15,4 +15,4 @@ spring:
 
 server:
   port:
-    9090
+    ${SERVER_PORT}
