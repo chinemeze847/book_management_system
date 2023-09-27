@@ -1,14 +1,18 @@
 package com.mobilize.BookSystem.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
 import com.mobilize.BookSystem.dto.BookUpdateDTO;
@@ -39,24 +43,19 @@ class BookServiceImpl implements BookService {
 	 */
 	@Override
 	public Object createBook(BookRequestDTO bookRequest) {
-		try {
-			//build the book object
-			Book book = Book.builder()
-					.author(bookRequest.getAuthor())
-					.price(bookRequest.getPrice())
-					.title(bookRequest.getTitle())
-					.isbn(bookRequest.getIsbn())
-					.publicationYear(bookRequest.getPublicationYear())
-					.build();
-			log.info("Saving book to database");
 
-			//returns the created book
-			return bookRepository.save(book);
-		} catch (DataIntegrityViolationException e) {
+		Book book = Book.builder()
+				.author(bookRequest.getAuthor())
+				.price(bookRequest.getPrice())
+				.title(bookRequest.getTitle())
+				.isbn(bookRequest.getIsbn())
+				.publicationYear(bookRequest.getPublicationYear())
+				.build();
+		log.info("Saving book to database");
 
-			//throws exception for invalid request data
-			throw new BookValidationException("Invalid book data: " + e.getMessage());
-		}
+		//returns the created book
+		return bookRepository.save(book);
+
 	}
 
 	/**
@@ -164,5 +163,27 @@ class BookServiceImpl implements BookService {
 		}
 		log.info("Deleting book with id : {}", bookId);
 		bookRepository.deleteById(bookId);
+	}
+
+	/**
+	 * Validates a book request DTO.
+	 *
+	 * @param bindingResult  the result of the validation
+	 */
+	public void validateBook( BindingResult bindingResult) {
+
+		// Check if validation has failed
+		if (bindingResult.hasErrors()) {
+			// Handle validation errors
+
+			// Extract error messages from the BindingResult
+			List<String> errorMessages = bindingResult.getFieldErrors()
+					.stream()
+					.map(error -> error.getDefaultMessage())
+					.collect(Collectors.toList());
+
+			// Throw a custom BookValidationException with the error messages
+			throw new BookValidationException(errorMessages);
+		}
 	}
 }

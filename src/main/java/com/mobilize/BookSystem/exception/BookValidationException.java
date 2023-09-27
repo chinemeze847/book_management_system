@@ -1,5 +1,7 @@
 package com.mobilize.BookSystem.exception;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -10,13 +12,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BookValidationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
+	private List<String> errorMessages;
 
 	/**
 	 * Constructs a new BookValidationException with the specified detail message.
 	 *
-	 * @param message The detail message describing the validation error.
+	 * @param errorMessages The detail message describing the validation error.
 	 */
-	public BookValidationException(String message) {
-		super(message);
+	public BookValidationException(List<String> errorMessages) {
+		this.errorMessages = errorMessages;
+	}
+
+
+	public List<String> getErrorMessages() {
+		return errorMessages;
 	}
 }

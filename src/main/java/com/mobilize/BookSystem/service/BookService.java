@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.BindingResult;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
 import com.mobilize.BookSystem.dto.BookUpdateDTO;
@@ -63,4 +64,12 @@ public interface BookService {
 	 * @return A list of books matching the search criteria.
 	 */
 	List<Book> searchBooks(String title, String author);
+
+	/**
+	 * Validates a book based on the binding result.
+	 *
+	 * @param bindingResult The result of the validation.
+	 *                      It contains information about validation errors, if any.
+	 */
+	void validateBook(BindingResult bindingResult);
 }

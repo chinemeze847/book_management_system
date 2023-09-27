@@ -1,17 +1,17 @@
 package com.mobilize.BookSystem.exception.adviser;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
-import com.mobilize.BookSystem.exception.BookNotFoundException;
-import com.mobilize.BookSystem.exception.BookValidationException;
-import com.mobilize.BookSystem.exception.ErrorMessage;
-import com.mobilize.BookSystem.exception.InvalidSearchParametersException;
+import com.mobilize.BookSystem.exception.*;
 
 /**
  * Controller advice class to handle exceptions globally for the BookController.
@@ -30,7 +30,7 @@ public class BookControllerAdvice {
 		ErrorMessage message = new ErrorMessage(
 				HttpStatus.NOT_FOUND.value(),
 				new Date(),
-				ex.getMessage(),
+				"Book Not Found",
 				request.getDescription(false));
 
 		return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
@@ -44,10 +44,11 @@ public class BookControllerAdvice {
 	 */
 	@ExceptionHandler(BookValidationException.class)
 	public ResponseEntity<ErrorMessage> bookValidationException(BookValidationException ex, WebRequest request) {
+
 		ErrorMessage message = new ErrorMessage(
 				HttpStatus.BAD_REQUEST.value(),
 				new Date(),
-				ex.getMessage(),
+				ex.getErrorMessages(),
 				request.getDescription(false));
 
 		return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
@@ -64,10 +65,22 @@ public class BookControllerAdvice {
 		ErrorMessage message = new ErrorMessage(
 				HttpStatus.BAD_REQUEST.value(),
 				new Date(),
-				ex.getMessage(),
+				"Invalid Search Parameters",
 				request.getDescription(false));
 
 		return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * Exception handler for handling the InvalidYearException.
+	 *
+	 * @param ex The InvalidYearException instance.
+	 * @return A ResponseEntity containing the error message and HTTP status BAD_REQUEST.
+	 */
+	@ExceptionHandler(InvalidYearException.class)
+	public ResponseEntity<String> handleInvalidYearException(InvalidYearException ex) {
+		// Message to be sent
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -81,7 +94,7 @@ public class BookControllerAdvice {
 		ErrorMessage message = new ErrorMessage(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				new Date(),
-				ex.getMessage(),
+				"Internal server error",
 				request.getDescription(false));
 
 		return new ResponseEntity<ErrorMessage>(message, HttpStatus.INTERNAL_SERVER_ERROR);

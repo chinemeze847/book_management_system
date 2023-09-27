@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -182,7 +179,7 @@ class BookServiceImplTest {
 
 		//fake what the repository returns
 		when(bookRepository.existsById(bookId)).thenReturn(true);
-		when(bookRepository.save(any(Book.class))).thenThrow(new BookValidationException("Invalid data"));
+		when(bookRepository.save(any(Book.class))).thenThrow(new BookValidationException(Arrays.asList("Invalid data")));
 
 		// Act and Assert
 		assertThrows(BookValidationException.class, () -> {

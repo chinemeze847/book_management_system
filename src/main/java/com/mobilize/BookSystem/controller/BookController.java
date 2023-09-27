@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
@@ -38,7 +39,12 @@ public class BookController {
 	 * @return A book json object is returned
 	 */
 	@PostMapping()
-	public ResponseEntity<?> createBook(@Valid @RequestBody BookRequestDTO bookRequest){
+	public ResponseEntity<?> createBook(@Valid @RequestBody BookRequestDTO bookRequest, BindingResult bindingResult){
+
+		//checks if the request is valid
+		bookService.validateBook(bindingResult);
+
+		//returns this if the validation passes
 		return new ResponseEntity<>(bookService.createBook(bookRequest), HttpStatus.CREATED);
 	}
 
