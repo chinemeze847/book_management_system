@@ -18,7 +18,7 @@ import com.mobilize.BookSystem.dto.BookRequestDTO;
 import com.mobilize.BookSystem.dto.BookUpdateDTO;
 import com.mobilize.BookSystem.exception.BookNotFoundException;
 import com.mobilize.BookSystem.exception.BookValidationException;
-import com.mobilize.BookSystem.exception.InvalidSearchParametersException;
+import com.mobilize.BookSystem.exception.QueryParamValidationException;
 import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.repository.BookRepository;
 
@@ -73,7 +73,7 @@ class BookServiceImpl implements BookService {
 		}catch (InvalidDataAccessApiUsageException ex)
 		{
 			//throws an exception if the parameters are invalid
-			throw new InvalidSearchParametersException("Invalid search parameters: " + ex.getMessage());
+			throw new QueryParamValidationException("Invalid search parameters: " + ex.getMessage());
 		}
 	}
 
@@ -116,7 +116,7 @@ class BookServiceImpl implements BookService {
 			}
 		} catch (InvalidDataAccessApiUsageException ex) {
 			//throws invalid search parameter if wrong parameters are provided
-			throw new InvalidSearchParametersException("Invalid search parameters: " + ex.getMessage());
+			throw new QueryParamValidationException("Invalid search parameters: " + ex.getMessage());
 		}
 	}
 

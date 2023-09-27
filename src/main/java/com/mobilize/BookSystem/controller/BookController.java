@@ -2,6 +2,7 @@ package com.mobilize.BookSystem.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -14,11 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
 import com.mobilize.BookSystem.dto.BookUpdateDTO;
 import com.mobilize.BookSystem.dto.SearchResponse;
 import com.mobilize.BookSystem.dto.SuccessResponse;
+import com.mobilize.BookSystem.exception.QueryParamValidationException;
 import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.service.BookService;
 
@@ -133,11 +136,23 @@ public class BookController {
 	 */
 	@GetMapping("/search")
 	public ResponseEntity<SearchResponse> searchBooks(
-			@RequestParam(required = false) String title,
-			@RequestParam(required = false) String author
+			@RequestParam(name = "title", required = false) String title,
+			@RequestParam(name = "author",required = false) String author,
+			WebRequest webRequest
 	) {
+		// Get all request parameters
+		Map<String, String[]> requestParams = webRequest.getParameterMap();
+
+		// Check for expected parameters
+		if (!requestParams.containsKey("title") && !requestParams.containsKey("author")) {
+			// Throw an exception for missing parameters
+			throw new QueryParamValidationException("Required query parameters are missing");
+		}
+
+		//search for books given title , author
 		List<Book> matchingBooks = bookService.searchBooks(title, author);
 
+		//create a search response object
 		SearchResponse response = new SearchResponse();
 
 		if (matchingBooks.isEmpty()) {
@@ -150,4 +165,5 @@ public class BookController {
 
 		return ResponseEntity.ok(response);
 	}
+
 }

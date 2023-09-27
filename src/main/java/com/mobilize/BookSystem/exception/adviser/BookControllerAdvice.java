@@ -58,12 +58,12 @@ public class BookControllerAdvice {
 	 * @param request The WebRequest.
 	 * @return ResponseEntity containing error details and HTTP status BAD_REQUEST.
 	 */
-	@ExceptionHandler(InvalidSearchParametersException.class)
-	public ResponseEntity<ErrorMessage> invalidSearchParametersException(InvalidSearchParametersException ex, WebRequest request) {
+	@ExceptionHandler(QueryParamValidationException.class)
+	public ResponseEntity<ErrorMessage> invalidSearchParametersException(QueryParamValidationException ex, WebRequest request) {
 		ErrorMessage message = new ErrorMessage(
 				HttpStatus.BAD_REQUEST.value(),
 				new Date(),
-				"Invalid Search Parameters",
+				ex.getMessage(),
 				request.getDescription(false));
 
 		return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);

@@ -5,15 +5,15 @@ package com.mobilize.BookSystem.exception;
  * This exception is typically thrown when an attempt to search for books
  * using invalid or unsupported search parameters is made.
  */
-public class InvalidSearchParametersException extends RuntimeException {
+public class QueryParamValidationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a new InvalidSearchParametersException with the provided message.
+	 * Constructs a new QueryParamValidationException with the provided message.
 	 *
 	 * @param message A description of the error message.
 	 */
-	public InvalidSearchParametersException(String message) {
+	public QueryParamValidationException(String message) {
 		super(message);
 	}
 }
