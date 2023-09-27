@@ -39,6 +39,7 @@ public class BookUpdateDTO {
 	It should be a valid year
 	 */
 	@YearConstraint(message = "publication year is not valid")
+	@NotNull(message = "publication year should not be null")
 	private Integer publicationYear;
 
 	/*
