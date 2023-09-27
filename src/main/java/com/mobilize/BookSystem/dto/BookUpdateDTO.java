@@ -47,7 +47,7 @@ public class BookUpdateDTO {
 	which should not be below 10$
 	 */
 	@NotNull
-	@DecimalMin(value = "10.0", inclusive = true, message = "price should be above 50$")
+	@DecimalMin(value = "10.0", inclusive = true, message = "price should be above 10$")
 	private double price;
 
 	/*
