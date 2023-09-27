@@ -1,4 +1,4 @@
-package com.mobilize.BookSystem.exception;
+package com.mobilize.BookSystem.dto;
 
 import java.util.Date;
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.mobilize.BookSystem.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.mobilize.BookSystem.dto.BookRequestDTO;
 import com.mobilize.BookSystem.dto.BookUpdateDTO;
+import com.mobilize.BookSystem.dto.SearchResponse;
+import com.mobilize.BookSystem.dto.SuccessResponse;
 import com.mobilize.BookSystem.model.Book;
 import com.mobilize.BookSystem.service.BookService;
 
@@ -105,13 +108,21 @@ public class BookController {
 	 * @return  no content status code
 	 */
 	@DeleteMapping("/{bookId}")
-	public ResponseEntity<Book> deleteBook(@PathVariable Long bookId){
+	public ResponseEntity<SuccessResponse> deleteBook(@PathVariable Long bookId){
 
 		//call the deleteBook method on the service to delete a book
 		bookService.deleteBook(bookId);
 
 		//returns 204 status code
-		return ResponseEntity.noContent().build();
+		// Create a SuccessMessage instance
+		SuccessResponse successMessage = SuccessResponse.builder()
+				.statusCode(200) // Status code 200 (successful)
+				.timestamp(new Date())
+				.message("Book Deleted Successfully !!!")
+				.build();
+
+		// Create a ResponseEntity with status code 204 and the SuccessMessage instance as the body
+		return ResponseEntity.ok(successMessage);
 	}
 
 	/**
@@ -121,18 +132,22 @@ public class BookController {
 	 * @return returns all matching books as json
 	 */
 	@GetMapping("/search")
-	public ResponseEntity<List<Book>> searchBooks(
+	public ResponseEntity<SearchResponse> searchBooks(
 			@RequestParam(required = false) String title,
 			@RequestParam(required = false) String author
 	) {
 		List<Book> matchingBooks = bookService.searchBooks(title, author);
 
-		//checks if the matchingBooks variable is empty
+		SearchResponse response = new SearchResponse();
+
 		if (matchingBooks.isEmpty()) {
-			return ResponseEntity.noContent().build();
+			// If no matching books, set a custom message
+			response.setMessage("No matching books found.");
+		} else {
+			// If there are matching books, set them in the response
+			response.setMatchingBooks(matchingBooks);
 		}
 
-		//returns all matching books are
-		return ResponseEntity.ok(matchingBooks);
+		return ResponseEntity.ok(response);
 	}
 }
